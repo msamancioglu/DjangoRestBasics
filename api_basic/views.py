@@ -34,28 +34,28 @@ def article_list(request):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
+
+@api_view(['GET', 'PUT', 'DELETE'])
 def article_detail(request, pk):
     # Firstly, lets find requested article
     article = get_object_or_404(Article, pk=pk)
 
     if request.method == "GET":
         serializer = ArticleSerializer(article)
-        return JsonResponse(serializer.data, safe= False)
+        return Response(serializer.data)
 
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ArticleSerializer(article, data=data, partial = True)
+        #data = JSONParser().parse(request)
+        serializer = ArticleSerializer(article, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status = 400)
-
+            return Response(serializer.data)
+        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         article.delete()
-        return HttpResponse(pk)
+        return Response(status = status.HTTP_204_NO_CONTENT)
 
 
