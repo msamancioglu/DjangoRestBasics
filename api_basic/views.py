@@ -17,7 +17,22 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from rest_framework.views import APIView
+
+from rest_framework import generics
+
 # Create your views here.
+
+#Generic based view for GET and POST (list and create)
+
+class ArticleList(generics.ListCreateAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+
+class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+
+
 
 #Class based api view
 class ArticleAPIView(APIView):
