@@ -20,15 +20,26 @@ from rest_framework.views import APIView
 
 from rest_framework import generics
 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 # Create your views here.
 
 #Generic based view for GET and POST (list and create)
 
 class ArticleList(generics.ListCreateAPIView):
+    #authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
 
+
+
 class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
+    #authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
 

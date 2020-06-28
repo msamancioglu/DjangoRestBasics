@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     #My apps
     'rest_framework',
     'api_basic',
+    'rest_framework.authtoken',
 
     #Django apps
     'django.contrib.admin',
