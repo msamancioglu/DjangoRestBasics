@@ -5,7 +5,8 @@ from rest_framework.parsers import JSONParser
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Article
-from .serializers import ArticleSerializer
+from rest_framework.authtoken.models import Token
+from .serializers import ArticleSerializer, TokenSerializer
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
@@ -25,10 +26,33 @@ from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
+@login_required
+def getToken(request):
+    return HttpResponse(request.POST.get('username'))
+
+
+##Token lsit create
+
+class TokenList(generics.ListCreateAPIView):
+    authentication_classes = [ TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = Token.objects.all()
+    serializer_class = TokenSerializer
+
+
+
+class TokenDetail(generics.RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'user'
+    queryset = Token.objects.all()
+    serializer_class = TokenSerializer
+
+
 #Generic based view for GET and POST (list and create)
 
 class ArticleList(generics.ListCreateAPIView):
-    #authentication_classes = [SessionAuthentication, BasicAuthentication]
+    #authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Article.objects.all()
@@ -37,7 +61,7 @@ class ArticleList(generics.ListCreateAPIView):
 
 
 class ArticleDetail(generics.RetrieveUpdateDestroyAPIView):
-    #authentication_classes = [SessionAuthentication, BasicAuthentication]
+    #authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Article.objects.all()
